@@ -1,0 +1,12 @@
+server:
+  port: 8081
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/price_get?useUnicode=true&characterEncoding=utf-8&useSSL=false&jdbcCompliantTruncation=false&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+
+yeafel:
+  cookie: 612824cf4517567bf525fb77998cab46,1592978287752; _ntes_nuid=612824cf4517567bf525fb77998cab46; __root_domain_v=.163.com; _qddaz=QD.qeb5nw.nmwq7c.khe6cegi; Device-Id=BNRA2CR9itqWanF0xY0X; _ga=GA1.2.549947988.1605248960; Locale-Supported=zh-Hans; game=csgo; UM_distinctid=177f5b48ebcb76-0719b9dd87f592-73e356b-1fa400-177f5b48ebdd73; NTES_CMT_USER_INFO=308010039%7C%E6%9C%89%E6%80%81%E5%BA%A6%E7%BD%91%E5%8F%8B0imZMT%7Chttp%3A%2F%2Fcms-bucket.nosdn.127.net%2F2018%2F08%2F13%2F078ea9f65d954410b62a52ac773875a1.jpeg%7Cfalse%7CeWQuYzQ4NmYwZDczMTA1NGY1ZmJAMTYzLmNvbQ%3D%3D; _gid=GA1.2.1014316696.1615643393; NTES_hp_textlink1=old; timing_user_id=time_OhkyKJQGT1; _nietop_foot=%u6211%u7684%u4E16%u754C%7Cmc.163.com; NTES_YD_SESS=MEBs7qu7GY.uLmithcJ11sYFJ4Hn2zX2uEc5vdYoveKFWh3VWELSHaYAQh2TPS6pU.CbZhTBE5zAf7roEVHfQFeTSLQ81qmsCc7tWHbyMf1X2pa5CZg3gz8yGdZ7SuxvQ07d0PbH2FzMcISbAR86Uz6Gb5MR.kmZ2EOnP5M9dycQ7tq_jWPEN7qfGgGu7hWyr_7SkNp6Z4uIw6TLSWVvu7tTypVoTSKwO_dqfq0MZreCX; S_INFO=1615714116|0|3&80##|18323461578; P_INFO=18323461578|1615714116|1|netease_buff|00&99|null&null&null#chq&null#10#0|&0||18323461578; remember_me=U1095734301|CHc80g7S85zlNJDA4g2YK45OAGkZuYkt; session=1-OCNHa5U8p1TkvdEiOGMPDqKsuZ9dApG6XR9POhcOeuDs2038500165; steam_info_to_bind=; _gat_gtag_UA_109989484_1=1; csrf_token=IjU3YWNjNTRjMTFkMjBlMjEyNjA2MjZlMTg1ZjdhNjc3ZTNhNWI2MDgi.Ey-KiQ.rujA0B8j0bm6-zK4W--7E0Evvqc
+  c5cookie: C5Lang=zh; device_id=8e958e8cd517b3947e439a6e569cea28; Hm_lvt_86084b1bece3626cd94deede7ecf31a8=1615874223; C5Sate=230e0ffe30e600657755f82a5fabfcc0580a822ba:4:{i:0;s:9:"559470521";i:1;s:35:"wx_aef11ea3ae1aada91ceb86ff8d0d2311";i:2;i:259200;i:3;a:0:{}}; C5Machines=N3fPA8uHAVA0Pm7M/IBPlg==; C5Token=60504a3779fc6; C5Login=559470521; ZBTToken=83ea690b714e20ff9851a2d68ecbacee_559470521_1615874615; C5Appid=730; C5SessionID=hs4k2vj3voha2m33lncu95t8dp; C5Sign=1615996800; acw_tc=2f6a1fb016159568076615588e5fd87a1406c9c165e07246787bb8ea8f4d23; Hm_lpvt_86084b1bece3626cd94deede7ecf31a8=1615956809; SERVERID=b929a0bcfb7a2fbf4ab7d6709b55b7bb|1615956838|1615956807
