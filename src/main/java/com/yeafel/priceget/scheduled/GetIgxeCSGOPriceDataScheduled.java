@@ -46,7 +46,7 @@ public class GetIgxeCSGOPriceDataScheduled {
     /**
      * 每个小时第1分钟获取
      */
-    @Scheduled(cron = "0 1 * * * ?")
+    @Scheduled(cron = "0 1,20,40 * * * ?")
 //    @Scheduled(cron = "0/3 * * * * ?")
     public void getPricesData() {
         //https://www.igxe.cn/product/get_product_sales_history/730/571769
