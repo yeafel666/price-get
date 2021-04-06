@@ -81,82 +81,90 @@ public class GetC5CSGOPriceDataScheduled {
 
             ResponseEntity<String> result = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
             JSONObject body = JSONObject.parseObject(result.getBody());
-            JSONArray data = body.getJSONArray("data");
-            for (Object o : data) {
-                JSONObject item = (JSONObject) o;
-                Long goodsId = Long.valueOf(item.getString("itemId"));
-                BigDecimal price = item.getBigDecimal("price");
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                //交易时间 ，但小时数一直是00,
-                String transactTimeStr = sdf.format(new Date(Long.parseLong(item.getLong("updateTime") + "000")));
-                Date transactTime = null;
-                try {
-                    transactTime = sdf.parse(transactTimeStr);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                //为了取磨损度和印花信息 ----------------start
-                String detailUrl = "https://www.c5game.com/steam/item/detail.html?id=" + item.getString("productId");
-                headers.set(HttpHeaders.USER_AGENT, userAgent);
-                headers.put(HttpHeaders.COOKIE, cookies);
-                headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-
-                MultiValueMap<String, String> paramMapForDetail = new LinkedMultiValueMap<>();
-                HttpEntity<MultiValueMap<String, String>> entityForDetail = new HttpEntity<>(paramMapForDetail, headers);
-
-                ResponseEntity<String> resultForDetail = restTemplate.exchange(detailUrl, HttpMethod.GET, entityForDetail, String.class);
-                int i3 = resultForDetail.toString().indexOf("磨损：");
-                String paintwear = null;
-                if (i3 != -1) {
-                    paintwear = resultForDetail.toString().substring(resultForDetail.toString().indexOf("磨损："), resultForDetail.toString().indexOf("磨损：") + 16).replace("磨损：", "");
-                }
-                int i1 = resultForDetail.toString().indexOf("印花:");
-                String stickers = null;
-                //如果印花项存在
-                if (i1 != -1) {
-                    stickers = resultForDetail.toString().substring(resultForDetail.toString().indexOf("印花:"), resultForDetail.toString().indexOf("</center>")).replace("印花:", "");
-                }
-                //为了取磨损度和印花信息 ----------------end
-
-
-                //入库之前当磨损度为空时，交易时间和商品Id是否重复
-                if (paintwear == null) {
-                    List<TransactRecord> byGoodsIdAndTransactTime = transactRecordRepository.findByGoodsIdAndTransactTime(goodsId, transactTime);
-                    if (byGoodsIdAndTransactTime != null && byGoodsIdAndTransactTime.size() > 0) {
-                        System.out.println("\r\n" + byGoodsIdAndTransactTime.toString());
-                        //说明已经存在了该条记录，跳过该次存储
-                        System.out.println("C5: 该条记录已存在，跳过");
-                        continue;
-                    }
-                }
-
-                //开始存入数据
-                TransactRecord transactRecord = new TransactRecord();
-                transactRecord.setPrice(price);
-                transactRecord.setGoodsId(goodsId);
-                transactRecord.setPaintwear(paintwear);
-                transactRecord.setStickers(stickers);
-                transactRecord.setStickerIsInfluence(0);
-                transactRecord.setTransactTime(transactTime);
-                transactRecord.setGoodsName(goodsName);
-                transactRecord.setPlatform("C5");
-                try {
-                    System.out.println("C5:开始存储----------------------------------------");
-                    String curTime = sdf.format(new Date());
-                    System.out.println("C5:当前时间" + curTime);
-                    transactRecordRepository.save(transactRecord);
-                    System.out.println(transactRecord.toString());
-                    System.out.println("C5:存储成功----------------------------------------\r\n \r\n");
-                    //存一条数据睡眠10秒
+            if (body == null) {
+                System.out.println("本次【" + goodsName + "】未获取到内容，进入下一个商品获取");
+            } else if ("请登录".equals(body.getString("errorMsg"))) {
+                System.err.println("C5的令牌已经过期，请及时更新令牌");
+                //直接终止本次C5的程序
+                break;
+            } else {
+                JSONArray data = body.getJSONArray("data");
+                for (Object o : data) {
+                    JSONObject item = (JSONObject) o;
+                    Long goodsId = Long.valueOf(item.getString("itemId"));
+                    BigDecimal price = item.getBigDecimal("price");
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    //交易时间 ，但小时数一直是00,
+                    String transactTimeStr = sdf.format(new Date(Long.parseLong(item.getLong("updateTime") + "000")));
+                    Date transactTime = null;
                     try {
-                        System.out.println("C5:已获取一条记录，睡眠10秒···············\r\n \r\n \r\n");
-                        Thread.sleep(10000);
-                    } catch (InterruptedException e) {
+                        transactTime = sdf.parse(transactTimeStr);
+                    } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    System.out.println("C5:该记录已经存在，不予存储");
-                    System.out.println("-----------------------------------------------\r\n \r\n");
+                    //为了取磨损度和印花信息 ----------------start
+                    String detailUrl = "https://www.c5game.com/steam/item/detail.html?id=" + item.getString("productId");
+                    headers.set(HttpHeaders.USER_AGENT, userAgent);
+                    headers.put(HttpHeaders.COOKIE, cookies);
+                    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+
+                    MultiValueMap<String, String> paramMapForDetail = new LinkedMultiValueMap<>();
+                    HttpEntity<MultiValueMap<String, String>> entityForDetail = new HttpEntity<>(paramMapForDetail, headers);
+
+                    ResponseEntity<String> resultForDetail = restTemplate.exchange(detailUrl, HttpMethod.GET, entityForDetail, String.class);
+                    int i3 = resultForDetail.toString().indexOf("磨损：");
+                    String paintwear = null;
+                    if (i3 != -1) {
+                        paintwear = resultForDetail.toString().substring(resultForDetail.toString().indexOf("磨损："), resultForDetail.toString().indexOf("磨损：") + 16).replace("磨损：", "");
+                    }
+                    int i1 = resultForDetail.toString().indexOf("印花:");
+                    String stickers = null;
+                    //如果印花项存在
+                    if (i1 != -1) {
+                        stickers = resultForDetail.toString().substring(resultForDetail.toString().indexOf("印花:"), resultForDetail.toString().indexOf("</center>")).replace("印花:", "");
+                    }
+                    //为了取磨损度和印花信息 ----------------end
+
+
+                    //入库之前当磨损度为空时，交易时间和商品Id是否重复
+                    if (paintwear == null) {
+                        List<TransactRecord> byGoodsIdAndTransactTime = transactRecordRepository.findByGoodsIdAndTransactTime(goodsId, transactTime);
+                        if (byGoodsIdAndTransactTime != null && byGoodsIdAndTransactTime.size() > 0) {
+                            System.out.println("\r\n" + byGoodsIdAndTransactTime.toString());
+                            //说明已经存在了该条记录，跳过该次存储
+                            System.out.println("C5: 该条记录已存在，跳过");
+                            continue;
+                        }
+                    }
+
+                    //开始存入数据
+                    TransactRecord transactRecord = new TransactRecord();
+                    transactRecord.setPrice(price);
+                    transactRecord.setGoodsId(goodsId);
+                    transactRecord.setPaintwear(paintwear);
+                    transactRecord.setStickers(stickers);
+                    transactRecord.setStickerIsInfluence(0);
+                    transactRecord.setTransactTime(transactTime);
+                    transactRecord.setGoodsName(goodsName);
+                    transactRecord.setPlatform("C5");
+                    try {
+                        System.out.println("C5:开始存储----------------------------------------");
+                        String curTime = sdf.format(new Date());
+                        System.out.println("C5:当前时间" + curTime);
+                        transactRecordRepository.save(transactRecord);
+                        System.out.println(transactRecord.toString());
+                        System.out.println("C5:存储成功----------------------------------------\r\n \r\n");
+                        //存一条数据睡眠10秒
+                        try {
+                            System.out.println("C5:已获取一条记录，睡眠10秒···············\r\n \r\n \r\n");
+                            Thread.sleep(10000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    } catch (Exception e) {
+                        System.out.println("C5:该记录已经存在，不予存储");
+                        System.out.println("-----------------------------------------------\r\n \r\n");
+                    }
                 }
             }
         }
