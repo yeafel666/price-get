@@ -80,7 +80,19 @@ CREATE TABLE `need_get_goods`  (
 SET FOREIGN_KEY_CHECKS = 1;
 ```
 
+## 关于cookie
+在application-dev.yml(开发环境)文件或者application-pro.yml(线上环境)下的yeafel.cookie和yeafel.c5cookie配置自己账号登录之后的网易buff的cookie和c5cookie (igxe不需要配置)
+,如您有服务器可修改 application-pro.yml的mysql地址为您线上服务器，application.yml下active切换为prod即可。
+cookie配置例如:
+```
+yeafel:
+  cookie: yourBuffCookie
+  c5cookie: yourC5Cookie
+```
+
+
 
 ## 致谢
 该项目感谢，shuyuXiang提供需求，一起讨论得以研发。
-希望CSGO的兄弟们能发现问题，一起维护该项目。真诚感谢
+希望玩CSGO的程序员兄弟们能发现问题，一起维护该项目。真诚感谢。时刻知晓CSGO各个平台市场波动，交易东西不亏钱。
+也希望大家能够发财，Go!Go!Go!
